@@ -1,0 +1,14 @@
+[
+  {"id": 1, "title": "Lenguaje 1°", "price": 7, "position": "A1"},
+  {"id": 2, "title": "Lenguaje 2°", "price": 8, "position": "A1"},
+  {"id": 3, "title": "Lenguaje 3°", "price": 9, "position": "A2"},
+  {"id": 4, "title": "Lectura 1°", "price": 6, "position": "A1"},
+  {"id": 5, "title": "Comunicación 2°", "price": 10, "position": "A2"},
+  {"id": 6, "title": "Ortografía 1°", "price": 8, "position": "A1"},
+  {"id": 7, "title": "Lenguaje 4°", "price": 11, "position": "A3"},
+  {"id": 8, "title": "Lenguaje 5°", "price": 12, "position": "A3"},
+  {"id": 9, "title": "Lenguaje 6°", "price": 13, "position": "B1"},
+  {"id": 10, "title": "Lenguaje 1° Sec", "price": 14, "position": "B2"},
+  {"id": 11, "title": "Lenguaje 2° Sec", "price": 14, "position": "B2"},
+  {"id": 12, "title": "Lenguaje 3° Sec", "price": 15, "position": "B3"}
+]
