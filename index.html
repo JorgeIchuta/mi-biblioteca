@@ -664,9 +664,7 @@
             const search = document.getElementById('global-search').value.toLowerCase();
 
             const filtered = books.filter(book => {
-                const matchesSearch = !search || 
-                    book.title.toLowerCase().includes(search) ||
-                    book.author.toLowerCase().includes(search);
+                const matchesSearch = !search || book.title.toLowerCase().includes(search);
                 
                 let matchesPrice = true;
                 if (currentPriceFilter) {
