@@ -26,6 +26,21 @@
             margin-bottom: 15px;
         }
 
+        .buscador {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #2a5298;
+            border-radius: 25px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .buscador:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.2);
+        }
+
         .filtros {
             display: flex;
             flex-wrap: wrap;
@@ -35,12 +50,12 @@
         }
 
         .filtro {
-            padding: 10px 15px;
+            padding: 8px 14px;
             background: white;
             border: 2px solid #2a5298;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             color: #2a5298;
             transition: all 0.2s;
         }
@@ -63,14 +78,14 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        th { padding: 12px; background: #2a5298; color: white; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
+        th { padding: 12px; background: #2a5298; color: white; text-align: left; font-size: 14px; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
         tr:hover { background: #f5f7fa; }
 
         .price {
             background: #27ae60; color: white;
             padding: 3px 10px; border-radius: 15px;
-            font-weight: bold; font-size: 13px;
+            font-weight: bold; font-size: 12px;
         }
 
         .position {
@@ -90,7 +105,9 @@
     <div class="container">
         <h1>📚 Inventario</h1>
         
-        <div class="filtros">
+        <input type="text" class="buscador" id="buscar" placeholder="🔍 Buscar libro..." oninput="buscar()">
+        
+        <div class="filtros" id="botones">
             <button class="filtro activo" onclick="filtrar('', this)">Todos</button>
             <button class="filtro" onclick="filtrar('A1', this)">A1</button>
             <button class="filtro" onclick="filtrar('A2', this)">A2</button>
@@ -131,12 +148,12 @@
             { titulo: "Gramática 4°", precio: 11, lugar: "A3" }
         ];
 
-        let filtroActual = '';
+        let filtroPosicion = '';
 
         function mostrar(lista) {
             const tbody = document.getElementById('lista');
             if (lista.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="empty">No hay libros</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" class="empty">No se encontró</td></tr>';
                 return;
             }
             tbody.innerHTML = lista.map(libro => 
@@ -149,18 +166,34 @@
         }
 
         function filtrar(lugar, boton) {
-            filtroActual = lugar;
-            
-            // Actualizar botones
+            filtroPosicion = lugar;
             document.querySelectorAll('.filtro').forEach(b => b.classList.remove('activo'));
             boton.classList.add('activo');
+            buscar();
+        }
+
+        function buscar() {
+            let texto = document.getElementById('buscar').value.toLowerCase();
+            // Quitar tildes
+            texto = texto.replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i').replace(/ó/g,'o').replace(/ú/g,'u');
             
-            if (lugar === '') {
-                mostrar(libros);
-            } else {
-                const filtrados = libros.filter(libro => libro.lugar === lugar);
-                mostrar(filtrados);
+            let resultado = libros;
+            
+            // Aplicar filtro de posición
+            if (filtroPosicion !== '') {
+                resultado = resultado.filter(libro => libro.lugar === filtroPosicion);
             }
+            
+            // Aplicar búsqueda por texto
+            if (texto !== '') {
+                resultado = resultado.filter(libro => {
+                    let titulo = libro.titulo.toLowerCase();
+                    titulo = titulo.replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i').replace(/ó/g,'o').replace(/ú/g,'u');
+                    return titulo.includes(texto);
+                });
+            }
+            
+            mostrar(resultado);
         }
 
         mostrar(libros);
