@@ -146,16 +146,17 @@
         }
 
         function buscar() {
-            const texto = document.getElementById('buscar').value.toLowerCase();
+            const texto = document.getElementById('buscar').value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             
             if (texto === '') {
                 mostrar(libros);
                 return;
             }
             
-            const filtrados = libros.filter(libro => 
-                libro.titulo.toLowerCase().includes(texto)
-            );
+            const filtrados = libros.filter(libro => {
+                const titulo = libro.titulo.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return titulo.includes(texto);
+            });
             
             mostrar(filtrados);
         }
