@@ -146,7 +146,10 @@
         }
 
         function buscar() {
-            const texto = document.getElementById('buscar').value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            let texto = document.getElementById('buscar').value.toLowerCase();
+            
+            // Quitar tildes del texto buscado
+            texto = texto.replace(/á/g, 'a').replace(/é/g, 'e').replace(/í/g, 'i').replace(/ó/g, 'o').replace(/ú/g, 'u');
             
             if (texto === '') {
                 mostrar(libros);
@@ -154,7 +157,9 @@
             }
             
             const filtrados = libros.filter(libro => {
-                const titulo = libro.titulo.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                let titulo = libro.titulo.toLowerCase();
+                // Quitar tildes del título también
+                titulo = titulo.replace(/á/g, 'a').replace(/é/g, 'e').replace(/í/g, 'i').replace(/ó/g, 'o').replace(/ú/g, 'u');
                 return titulo.includes(texto);
             });
             
