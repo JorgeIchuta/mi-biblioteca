@@ -11,34 +11,47 @@
             font-family: 'Segoe UI', sans-serif;
             background: #f5f7fa;
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
             color: #333;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
         }
 
         h1 {
             text-align: center;
             color: #1e3c72;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        .search {
-            width: 100%;
-            padding: 15px 20px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        .filtros {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+            justify-content: center;
         }
 
-        .search:focus {
-            outline: none;
-            border-color: #2a5298;
+        .filtro {
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #2a5298;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2a5298;
+            transition: all 0.2s;
+        }
+
+        .filtro:hover {
+            background: #e8f4ff;
+        }
+
+        .filtro.activo {
+            background: #2a5298;
+            color: white;
         }
 
         table {
@@ -50,59 +63,49 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        th {
-            background: #2a5298;
-            color: white;
-        }
-
-        tr:hover {
-            background: #f5f7fa;
-        }
+        th { padding: 12px; background: #2a5298; color: white; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f5f7fa; }
 
         .price {
-            display: inline-block;
-            background: #27ae60;
-            color: white;
-            padding: 3px 12px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 14px;
+            background: #27ae60; color: white;
+            padding: 3px 10px; border-radius: 15px;
+            font-weight: bold; font-size: 13px;
         }
 
         .position {
-            display: inline-block;
-            background: #1e3c72;
-            color: white;
-            padding: 3px 10px;
-            border-radius: 15px;
+            background: #1e3c72; color: white;
+            padding: 3px 8px; border-radius: 12px;
             font-size: 12px;
         }
 
         .empty {
             text-align: center;
-            padding: 50px;
+            padding: 30px;
             color: #666;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📚 Inventario de Libros</h1>
+        <h1>📚 Inventario</h1>
         
-        <input type="text" class="search" id="buscar" placeholder="🔍 Buscar libro..." oninput="buscar()" autocomplete="off">
+        <div class="filtros">
+            <button class="filtro activo" onclick="filtrar('', this)">Todos</button>
+            <button class="filtro" onclick="filtrar('A1', this)">A1</button>
+            <button class="filtro" onclick="filtrar('A2', this)">A2</button>
+            <button class="filtro" onclick="filtrar('A3', this)">A3</button>
+            <button class="filtro" onclick="filtrar('B1', this)">B1</button>
+            <button class="filtro" onclick="filtrar('B2', this)">B2</button>
+            <button class="filtro" onclick="filtrar('B3', this)">B3</button>
+        </div>
         
         <table>
             <thead>
                 <tr>
                     <th>Libro</th>
                     <th>Precio</th>
-                    <th>Ubicación</th>
+                    <th>Ubi</th>
                 </tr>
             </thead>
             <tbody id="lista"></tbody>
@@ -128,42 +131,36 @@
             { titulo: "Gramática 4°", precio: 11, lugar: "A3" }
         ];
 
+        let filtroActual = '';
+
         function mostrar(lista) {
             const tbody = document.getElementById('lista');
-            
             if (lista.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="empty">No se encontró</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" class="empty">No hay libros</td></tr>';
                 return;
             }
-            
-            tbody.innerHTML = lista.map(libro => `
-                <tr>
+            tbody.innerHTML = lista.map(libro => 
+                `<tr>
                     <td><strong>${libro.titulo}</strong></td>
                     <td><span class="price">${libro.precio} bs</span></td>
                     <td><span class="position">${libro.lugar}</span></td>
-                </tr>
-            `).join('');
+                </tr>`
+            ).join('');
         }
 
-        function buscar() {
-            let texto = document.getElementById('buscar').value.toLowerCase();
+        function filtrar(lugar, boton) {
+            filtroActual = lugar;
             
-            // Quitar tildes del texto buscado
-            texto = texto.replace(/á/g, 'a').replace(/é/g, 'e').replace(/í/g, 'i').replace(/ó/g, 'o').replace(/ú/g, 'u');
+            // Actualizar botones
+            document.querySelectorAll('.filtro').forEach(b => b.classList.remove('activo'));
+            boton.classList.add('activo');
             
-            if (texto === '') {
+            if (lugar === '') {
                 mostrar(libros);
-                return;
+            } else {
+                const filtrados = libros.filter(libro => libro.lugar === lugar);
+                mostrar(filtrados);
             }
-            
-            const filtrados = libros.filter(libro => {
-                let titulo = libro.titulo.toLowerCase();
-                // Quitar tildes del título también
-                titulo = titulo.replace(/á/g, 'a').replace(/é/g, 'e').replace(/í/g, 'i').replace(/ó/g, 'o').replace(/ú/g, 'u');
-                return titulo.includes(texto);
-            });
-            
-            mostrar(filtrados);
         }
 
         mostrar(libros);
