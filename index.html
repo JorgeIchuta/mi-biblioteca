@@ -5,887 +5,162 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventario de Libros</title>
     <style>
-        :root {
-            --primary: #2a5298;
-            --primary-dark: #1e3c72;
-            --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            --bg-body: #f5f7fa;
-            --panel-bg: #fff;
-            --text: #333;
-            --text-light: #666;
-            --border: #ddd;
-            --success: #27ae60;
-            --warning: #e67e22;
-            --danger: #e74c3c;
-            --cell-empty: #ecf0f1;
-        }
-
-        .dark-mode {
-            --bg-body: #1a1a2e;
-            --panel-bg: #16213e;
-            --text: #eee;
-            --text-light: #aaa;
-            --border: #444;
-            --cell-empty: #2d3748;
-            --bg-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-gradient);
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f7fa;
             min-height: 100vh;
             padding: 20px;
-            color: var(--text);
+            color: #333;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
         h1 {
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .search-box {
-            display: flex;
-            gap: 10px;
-            flex: 1;
-            max-width: 500px;
-        }
-
-        .search-box input {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 25px;
-            font-size: 14px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-icon {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            padding: 12px 15px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.3s;
-        }
-
-        .btn-icon:hover {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.1);
-        }
-
-        .btn-new {
-            background: var(--success);
-            color: #fff;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-new:hover {
-            background: #1e8449;
-            transform: translateY(-2px);
-        }
-
-        .panel {
-            background: var(--panel-bg);
-            border-radius: 10px;
-            padding: 20px;
+            text-align: center;
+            color: #1e3c72;
             margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
+        .search {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .filters select {
-            padding: 8px 15px;
-            border: 2px solid var(--border);
-            border-radius: 20px;
-            font-size: 14px;
-            background: var(--panel-bg);
-            color: var(--text);
-            cursor: pointer;
-        }
-
-        .price-filters {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .price-btn {
-            padding: 8px 15px;
-            background: var(--cell-empty);
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.2s;
-            color: var(--text);
-        }
-
-        .price-btn:hover {
-            background: var(--border);
-        }
-
-        .price-btn.active {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        .stats-bar {
-            display: flex;
-            gap: 20px;
-            padding: 15px 0;
-            border-top: 1px solid var(--border);
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
-        .stat-item strong {
-            color: var(--primary);
-            font-size: 18px;
-        }
-
-        .table-container {
-            overflow-x: auto;
+        .search:focus {
+            outline: none;
+            border-color: #2a5298;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         th, td {
             padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #eee;
         }
 
         th {
-            background: var(--cell-empty);
-            font-weight: 600;
-            color: var(--text);
+            background: #2a5298;
+            color: white;
         }
 
         tr:hover {
-            background: rgba(42, 82, 152, 0.05);
+            background: #f5f7fa;
         }
 
-        .price-tag {
+        .price {
             display: inline-block;
-            background: var(--success);
-            color: #fff;
+            background: #27ae60;
+            color: white;
             padding: 3px 12px;
             border-radius: 15px;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 14px;
         }
 
-        .stock-tag {
-            background: var(--cell-empty);
-            padding: 3px 10px;
-            border-radius: 10px;
-            font-size: 13px;
-        }
-
-        .position-tag {
+        .position {
             display: inline-block;
-            background: var(--primary);
-            color: #fff;
+            background: #1e3c72;
+            color: white;
             padding: 3px 10px;
             border-radius: 15px;
             font-size: 12px;
         }
 
-        .actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        .actions button {
-            padding: 5px 8px;
-            font-size: 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-edit { background: var(--warning); color: #fff; }
-        .btn-delete { background: var(--danger); color: #fff; }
-
-        .shelf-section {
-            display: none;
-        }
-
-        .shelf-section.visible {
-            display: block;
-        }
-
-        .shelf-container {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            padding: 20px;
-        }
-
-        .shelf-row {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            position: relative;
-        }
-
-        .shelf-cell {
-            width: 150px;
-            height: 120px;
-            background: linear-gradient(135deg, #f5e6d3 0%, #d4c4a8 100%);
-            border: 3px solid #8B5A2B;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .shelf-cell:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        .shelf-cell .position-label {
-            font-size: 24px;
-            font-weight: bold;
-            color: #5D3A1A;
-        }
-
-        .shelf-cell .price-range {
-            font-size: 12px;
-            color: #5D3A1A;
-            margin-top: 5px;
-        }
-
-        .shelf-cell .book-count {
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal.visible {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--panel-bg);
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            animation: modalIn 0.3s ease;
-        }
-
-        @keyframes modalIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal h2 {
-            margin-bottom: 20px;
-            color: var(--primary);
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px 15px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
-            background: var(--panel-bg);
-            color: var(--text);
-        }
-
-        .form-row {
-            display: flex;
-            gap: 15px;
-        }
-
-        .form-row .form-group {
-            flex: 1;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        .modal-actions button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn-save { background: var(--success); color: #fff; }
-        .btn-cancel { background: var(--cell-empty); color: var(--text); }
-
-        .view-toggle {
-            display: flex;
-            gap: 5px;
-        }
-
-        .view-btn {
-            padding: 8px 15px;
-            background: var(--cell-empty);
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .view-btn.active {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .toast {
-            background: var(--panel-bg);
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            margin-bottom: 10px;
-            animation: slideIn 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 250px;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .toast.success { border-left: 4px solid var(--success); }
-        .toast.error { border-left: 4px solid var(--danger); }
-        .toast.info { border-left: 4px solid var(--primary); }
-
-        .empty-state {
+        .empty {
             text-align: center;
             padding: 50px;
-            color: var(--text-light);
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-            }
-
-            .search-box {
-                order: 2;
-                max-width: 100%;
-            }
-
-            .form-row {
-                flex-direction: column;
-            }
-
-            .shelf-cell {
-                width: 100px;
-                height: 90px;
-            }
+            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>📚 Inventario de Libros</h1>
-            <div class="search-box">
-                <input type="text" id="global-search" placeholder="🔍 Buscar libro por título..." oninput="filterBooks()">
-            </div>
-            <div class="header-actions">
-                <button class="btn-icon" onclick="toggleTheme()" title="Tema">🌙</button>
-                <button class="btn-icon" onclick="exportData()" title="Exportar">📤</button>
-                <button class="btn-icon" onclick="document.getElementById('import-file').click()" title="Importar">📥</button>
-                <input type="file" id="import-file" style="display:none" accept=".json" onchange="importData(event)">
-                <button class="btn-new" onclick="openModal()">➕ Nuevo</button>
-            </div>
-        </div>
-
-        <div class="panel">
-            <div class="toolbar">
-                <div class="filters">
-                    <div class="price-filters">
-                        <button class="price-btn active" onclick="setPriceFilter('')">Todos</button>
-                        <button class="price-btn" onclick="setPriceFilter('6-8')">6-8 bs</button>
-                        <button class="price-btn" onclick="setPriceFilter('9-10')">9-10 bs</button>
-                        <button class="price-btn" onclick="setPriceFilter('11-12')">11-12 bs</button>
-                        <button class="price-btn" onclick="setPriceFilter('13-15')">13-15 bs</button>
-                    </div>
-                </div>
-                <div class="view-toggle">
-                    <button class="view-btn active" onclick="setView('list')">📋 Lista</button>
-                    <button class="view-btn" onclick="setView('shelf')">🏚️ Estante</button>
-                </div>
-            </div>
-
-            <div id="list-view">
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Título</th>
-                                <th>Precio</th>
-                                <th>Ubicación</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="books-table-body">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="shelf-section" id="shelf-view">
-                <div class="shelf-container">
-                    <div class="shelf-row">
-                        <div class="shelf-cell" onclick="filterByPosition('A1')">
-                            <span class="position-label">A1</span>
-                            <span class="price-range">6-8 bs</span>
-                            <span class="book-count" id="count-A1">0 libros</span>
-                        </div>
-                        <div class="shelf-cell" onclick="filterByPosition('A2')">
-                            <span class="position-label">A2</span>
-                            <span class="price-range">8-10 bs</span>
-                            <span class="book-count" id="count-A2">0 libros</span>
-                        </div>
-                        <div class="shelf-cell" onclick="filterByPosition('A3')">
-                            <span class="position-label">A3</span>
-                            <span class="price-range">10-12 bs</span>
-                            <span class="book-count" id="count-A3">0 libros</span>
-                        </div>
-                    </div>
-                    <div class="shelf-row">
-                        <div class="shelf-cell" onclick="filterByPosition('B1')">
-                            <span class="position-label">B1</span>
-                            <span class="price-range">12-13 bs</span>
-                            <span class="book-count" id="count-B1">0 libros</span>
-                        </div>
-                        <div class="shelf-cell" onclick="filterByPosition('B2')">
-                            <span class="position-label">B2</span>
-                            <span class="price-range">13-14 bs</span>
-                            <span class="book-count" id="count-B2">0 libros</span>
-                        </div>
-                        <div class="shelf-cell" onclick="filterByPosition('B3')">
-                            <span class="position-label">B3</span>
-                            <span class="price-range">14-15 bs</span>
-                            <span class="book-count" id="count-B3">0 libros</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stats-bar">
-                <span class="stat-item">📚 <strong id="total-books">0</strong> libros</span>
-                <span class="stat-item">💰 Valor: <strong id="total-value">0</strong> bs</span>
-            </div>
-        </div>
+        <h1>📚 Inventario de Libros</h1>
+        
+        <input type="text" class="search" id="buscar" placeholder="🔍 Buscar libro..." oninput="buscar()">
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Libro</th>
+                    <th>Precio</th>
+                    <th>Ubicación</th>
+                </tr>
+            </thead>
+            <tbody id="lista"></tbody>
+        </table>
     </div>
-
-    <div class="modal" id="book-modal">
-        <div class="modal-content">
-            <h2 id="modal-title">➕ Agregar Libro</h2>
-            <form id="book-form" onsubmit="saveBook(event)">
-                <input type="hidden" id="book-id">
-                <div class="form-group">
-                    <label for="title">Título del libro *</label>
-                    <input type="text" id="title" required placeholder="Ej: Lenguaje 1°">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="price">Precio (bs) *</label>
-                        <input type="number" id="price" required min="6" max="15" placeholder="6-15">
-                    </div>
-                    <div class="form-group">
-                        <label for="position">Ubicación *</label>
-                        <select id="position" required>
-                            <option value="">Seleccionar</option>
-                            <option value="A1">A1</option>
-                            <option value="A2">A2</option>
-                            <option value="A3">A3</option>
-                            <option value="B1">B1</option>
-                            <option value="B2">B2</option>
-                            <option value="B3">B3</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
-                    <button type="submit" class="btn-save">💾 Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="toast-container" id="toast-container"></div>
 
     <script>
-        const POSITIONS = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3'];
+        const libros = [
+            { titulo: "Lenguaje 1°", precio: 7, lugar: "A1" },
+            { titulo: "Lenguaje 2°", precio: 8, lugar: "A1" },
+            { titulo: "Lenguaje 3°", precio: 9, lugar: "A2" },
+            { titulo: "Lectura 1°", precio: 6, lugar: "A1" },
+            { titulo: "Comunicación 2°", precio: 10, lugar: "A2" },
+            { titulo: "Ortografía 1°", precio: 8, lugar: "A1" },
+            { titulo: "Lenguaje 4°", precio: 11, lugar: "A3" },
+            { titulo: "Lenguaje 5°", precio: 12, lugar: "A3" },
+            { titulo: "Lenguaje 6°", precio: 13, lugar: "B1" },
+            { titulo: "Lenguaje 1° Sec", precio: 14, lugar: "B2" },
+            { titulo: "Lenguaje 2° Sec", precio: 14, lugar: "B2" },
+            { titulo: "Lenguaje 3° Sec", precio: 15, lugar: "B3" },
+            { titulo: "Narrativa 1°", precio: 9, lugar: "A2" },
+            { titulo: "Poesía 2°", precio: 10, lugar: "A2" },
+            { titulo: "Gramática 4°", precio: 11, lugar: "A3" }
+        ];
 
-        let books = [];
-        let currentView = 'list';
-        let currentPriceFilter = '';
-
-        function init() {
-            const saved = localStorage.getItem('inventario_libros');
-            if (saved) {
-                books = JSON.parse(saved);
-            } else {
-                books = [
-                    { id: 1, title: "Lenguaje 1°", price: 7, position: "A1" },
-                    { id: 2, title: "Lenguaje 2°", price: 8, position: "A1" },
-                    { id: 3, title: "Lenguaje 3°", price: 9, position: "A2" },
-                    { id: 4, title: "Lectura 1°", price: 6, position: "A1" },
-                    { id: 5, title: "Comunicación 2°", price: 10, position: "A2" },
-                    { id: 6, title: "Ortografía 1°", price: 8, position: "A1" },
-                    { id: 7, title: "Lenguaje 4°", price: 11, position: "A3" },
-                    { id: 8, title: "Lenguaje 5°", price: 12, position: "A3" },
-                    { id: 9, title: "Lenguaje 6°", price: 13, position: "B1" },
-                    { id: 10, title: "Lenguaje 1° Sec", price: 14, position: "B2" },
-                    { id: 11, title: "Lenguaje 2° Sec", price: 14, position: "B2" },
-                    { id: 12, title: "Lenguaje 3° Sec", price: 15, position: "B3" },
-                    { id: 13, title: "Narrativa 1°", price: 9, position: "A2" },
-                    { id: 14, title: "Poesía 2°", price: 10, position: "A2" },
-                    { id: 15, title: "Gramática 4°", price: 11, position: "A3" }
-                ];
-                saveData();
-            }
-
-            if (localStorage.getItem('darkMode') === 'true') {
-                document.body.classList.add('dark-mode');
-                document.querySelector('.btn-icon').textContent = '☀️';
-            }
-
-            filterBooks();
-            updateStats();
-        }
-
-        function saveData() {
-            localStorage.setItem('inventario_libros', JSON.stringify(books));
-        }
-
-        function filterBooks() {
-            const search = document.getElementById('global-search').value.toLowerCase();
-
-            const filtered = books.filter(book => {
-                const matchesSearch = !search || book.title.toLowerCase().includes(search);
-                
-                let matchesPrice = true;
-                if (currentPriceFilter) {
-                    const [min, max] = currentPriceFilter.split('-').map(Number);
-                    matchesPrice = book.price >= min && book.price <= max;
-                }
-                
-                return matchesSearch && matchesPrice;
-            });
-
-            renderTable(filtered);
-        }
-
-        function renderTable(bookList) {
-            const tbody = document.getElementById('books-table-body');
-            tbody.innerHTML = '';
-
-            if (bookList.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="empty-state">
-                            <h3>🔍 No se encontraron libros</h3>
-                            <p>Intenta con otros filtros</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            bookList.forEach((book, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td><strong>${book.title}</strong></td>
-                    <td><span class="price-tag">${book.price} bs</span></td>
-                    <td><span class="position-tag">${book.position}</span></td>
-                    <td class="actions">
-                        <button class="btn-edit" onclick="editBook(${book.id})">✏️</button>
-                        <button class="btn-delete" onclick="deleteBook(${book.id})">🗑️</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function updateStats() {
-            const totalValue = books.reduce((sum, b) => sum + b.price, 0);
-
-            document.getElementById('total-books').textContent = books.length;
-            document.getElementById('total-value').textContent = totalValue;
-
-            POSITIONS.forEach(pos => {
-                const count = books.filter(b => b.position === pos).length;
-                document.getElementById(`count-${pos}`).textContent = `${count} libros`;
-            });
-        }
-
-        function setView(view) {
-            currentView = view;
-            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-
-            document.getElementById('list-view').style.display = view === 'list' ? 'block' : 'none';
-            document.getElementById('shelf-view').classList.toggle('visible', view === 'shelf');
-        }
-
-        function setPriceFilter(filter) {
-            currentPriceFilter = filter;
-            document.querySelectorAll('.price-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            filterBooks();
-        }
-
-        function filterByPosition(pos) {
-            document.getElementById('global-search').value = '';
-            setView('list');
-            currentPriceFilter = '';
-            document.querySelectorAll('.price-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector('.price-btn').classList.add('active');
+        function mostrar(lista) {
+            const tbody = document.getElementById('lista');
             
-            const filtered = books.filter(b => b.position === pos);
-            renderTable(filtered);
-            showToast(`Mostrando posición ${pos}`, 'info');
-        }
-
-        function openModal(book = null) {
-            const modal = document.getElementById('book-modal');
-            const title = document.getElementById('modal-title');
-            const form = document.getElementById('book-form');
-
-            if (book) {
-                title.textContent = '✏️ Editar Libro';
-                document.getElementById('book-id').value = book.id;
-                document.getElementById('title').value = book.title;
-                document.getElementById('author').value = book.author;
-                document.getElementById('price').value = book.price;
-                document.getElementById('stock').value = book.stock;
-                document.getElementById('position').value = book.position;
-            } else {
-                title.textContent = '➕ Agregar Libro';
-                form.reset();
-                document.getElementById('book-id').value = '';
-            }
-
-            modal.classList.add('visible');
-        }
-
-        function closeModal() {
-            document.getElementById('book-modal').classList.remove('visible');
-        }
-
-        function saveBook(e) {
-            e.preventDefault();
-
-            const id = document.getElementById('book-id').value;
-            const title = document.getElementById('title').value.trim();
-            const price = parseInt(document.getElementById('price').value);
-            const position = document.getElementById('position').value;
-
-            if (!title || !price || !position) {
-                showToast('Por favor complete todos los campos', 'error');
+            if (lista.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="empty">No se encontró</td></tr>';
                 return;
             }
+            
+            tbody.innerHTML = lista.map(libro => `
+                <tr>
+                    <td><strong>${libro.titulo}</strong></td>
+                    <td><span class="price">${libro.precio} bs</span></td>
+                    <td><span class="position">${libro.lugar}</span></td>
+                </tr>
+            `).join('');
+        }
 
-            if (id) {
-                const index = books.findIndex(b => b.id == id);
-                if (index !== -1) {
-                    books[index] = { ...books[index], title, price, position };
-                    showToast('Libro actualizado', 'success');
-                }
-            } else {
-                const newBook = {
-                    id: Date.now(),
-                    title,
-                    price,
-                    position
-                };
-                books.push(newBook);
-                showToast('Libro agregado', 'success');
+        function buscar() {
+            const texto = document.getElementById('buscar').value.toLowerCase();
+            
+            if (texto === '') {
+                mostrar(libros);
+                return;
             }
-
-            saveData();
-            filterBooks();
-            updateStats();
-            closeModal();
+            
+            const filtrados = libros.filter(libro => 
+                libro.titulo.toLowerCase().includes(texto)
+            );
+            
+            mostrar(filtrados);
         }
 
-        function editBook(id) {
-            const book = books.find(b => b.id === id);
-            if (book) openModal(book);
-        }
-
-        function deleteBook(id) {
-            const book = books.find(b => b.id === id);
-            if (book && confirm(`¿Eliminar "${book.title}"?`)) {
-                books = books.filter(b => b.id !== id);
-                saveData();
-                filterBooks();
-                updateStats();
-                showToast('Libro eliminado', 'success');
-            }
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            document.querySelector('.btn-icon').textContent = isDark ? '☀️' : '🌙';
-            localStorage.setItem('darkMode', isDark);
-        }
-
-        function exportData() {
-            const data = JSON.stringify(books, null, 2);
-            const blob = new Blob([data], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'inventario_libros.json';
-            a.click();
-            URL.revokeObjectURL(url);
-            showToast('Inventario exportado', 'success');
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (Array.isArray(imported)) {
-                        books = imported;
-                        saveData();
-                        filterBooks();
-                        updateStats();
-                        showToast(`Se cargaron ${books.length} libros`, 'success');
-                    } else {
-                        showToast('Formato de archivo inválido', 'error');
-                    }
-                } catch (err) {
-                    showToast('Error al importar', 'error');
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            const icons = { success: '✅', error: '❌', info: 'ℹ️' };
-            toast.innerHTML = `<span>${icons[type]}</span><span>${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.animation = 'slideIn 0.3s ease reverse';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        init();
+        mostrar(libros);
     </script>
 </body>
 </html>
